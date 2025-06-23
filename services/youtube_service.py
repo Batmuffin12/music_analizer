@@ -8,6 +8,7 @@ class YoutubeDownloader:
     def __init__(self, ffmpeg_path: str = r"C:\ffmpeg\bin"):
         self.ffmpeg_path = ffmpeg_path
 
+    @staticmethod
     def download_mp3(track_name: str, output_dir: str = "downloads"):
         """Download YouTube audio as mono MP3"""
         Path(output_dir).mkdir(parents=True, exist_ok=True)
