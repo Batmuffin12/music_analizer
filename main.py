@@ -3,12 +3,13 @@ from pydantic import BaseModel
 import yt_dlp
 import os
 from pathlib import Path
-from routes import downloads
+from routes import downloads, analysis
 
 
 app = FastAPI(title="YouTube MP3 Downloader", version="1.0.0")
 
 app.include_router(downloads.router)
+app.include_router(analysis.router)
 
 
 @app.get("/")
