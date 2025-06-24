@@ -132,7 +132,3 @@ class AudioAnalyzer:
 
         logger.info(f"Analysis complete: {len(all_features)} features extracted")
         return all_features
-
-
-if __name__ == "__main__":
-    test_analyzer()
