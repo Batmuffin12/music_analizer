@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pathlib import Path
 
-from models.schemas.analysis_schemas import AudioAnalysisRequest, AudioFeaturesResponse
+from models.schemas.analysis_schemas import AudioAnalysisRequest, AudioFeaturesResponse, GenrePredictionResponse
 from services.audio_analysis_service import AudioAnalyzer
+from services.ml_service import GenreClassifier
 
 router = APIRouter(
     prefix="/analysis",
@@ -11,6 +12,32 @@ router = APIRouter(
 
 # Create a single instance of our analyzer
 analyzer = AudioAnalyzer()
+genre_classifier = GenreClassifier()
+
+
+@router.post("/predict-genre",  response_model=GenrePredictionResponse)
+def predict_music_genre(request: AudioAnalysisRequest):
+    """
+    Predict the genre of an audio file using trained AI model
+    """
+    try:
+        if not Path(request.file_path).exists():
+             raise HTTPException(
+                status_code=404, 
+                detail=f"Audio file not found: {request.file_path}"
+            )
+        predicted_genre = genre_classifier.predict_genre(request.file_path) 
+        return GenrePredictionResponse(
+            predicted_genre=predicted_genre,
+            confidence=0.0,  # We'll add confidence later
+            file_path=request.file_path
+        ) 
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Genre prediction failed: {str(e)}"
+        )
+
 
 
 @router.post("/features", response_model=AudioFeaturesResponse)
@@ -36,6 +63,7 @@ def extract_audio_features(request: AudioAnalysisRequest):
         raise HTTPException(
             status_code=500, detail=f"Feature extraction failed: {str(e)}"
         )
+
 
 
 @router.get("/test")

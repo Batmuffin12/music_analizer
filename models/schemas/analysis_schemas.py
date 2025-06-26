@@ -64,6 +64,5 @@ class GenrePredictionResponse(BaseModel):
 
     predicted_genre: str
     confidence: float
-    all_probabilities: Dict[str, float]
-    features_used: int
     file_path: str
+    available_genres: List[str] = ["classical", "jazz", "metal", "rock", "blues"]

@@ -8,7 +8,7 @@ class GenreClassifier:
    target_genres = ['classical', 'jazz', 'metal', 'rock', 'blues']
    max_files_per_genre = 20  
 
-   def __init__(self, model_path="data/model.pkl"):
+   def __init__(self, model_path="Data/model.pkl"):
        self.model_path = Path(model_path)
        self.model = None
        self.feature_columns = None
@@ -20,15 +20,20 @@ class GenreClassifier:
            self.train_and_save_model()
        else:
            self.load_model()
+        
 
    def train_and_save_model(self):
        all_data = [] 
        for genre in self.target_genres:
-           genre_folder = Path(f"../data/genres_original/{genre}")
+           genre_folder = Path(f"Data/genres_original/{genre}")
            audio_files = list(genre_folder.glob("*.wav"))[:self.max_files_per_genre]
            for i, audio_file in enumerate(audio_files):
                try:
                    features = self.analyzer.analyze_file(str(audio_file))
+                   non_numeric_keys = ['file_path', 'filename', 'genre_folder']
+                   for key in non_numeric_keys:
+                        if key in features:
+                            del features[key]
                    features['genre'] = genre
                    all_data.append(features)
                except Exception as e:
