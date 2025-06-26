@@ -68,6 +68,11 @@ class GenreClassifier:
        
        feature_values = {col: features[col] for col in self.feature_columns if col in features}
        feature_df = pd.DataFrame([feature_values])
-       prediction = self.model.predict(feature_df)
-       
-       return prediction[0]
+       prediction = self.model.predict(feature_df)[0]
+       probabilities = self.model.predict_proba(feature_df)[0]
+       genre_probs = dict(zip(self.model.classes_, probabilities))
+       return {
+        'predicted_genre': prediction,
+        'confidence': float(max(probabilities)),
+        'all_probabilities': {genre: float(prob) for genre, prob in genre_probs.items()}
+        }

@@ -26,10 +26,9 @@ def predict_music_genre(request: AudioAnalysisRequest):
                 status_code=404, 
                 detail=f"Audio file not found: {request.file_path}"
             )
-        predicted_genre = genre_classifier.predict_genre(request.file_path) 
+        predicted_genre = genre_classifier.predict_genre(request.file_path)
         return GenrePredictionResponse(
-            predicted_genre=predicted_genre,
-            confidence=0.0,  # We'll add confidence later
+            **predicted_genre,
             file_path=request.file_path
         ) 
     except Exception as e:
