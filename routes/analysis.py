@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pathlib import Path
 
-from models.schemas.analysis_schemas import AudioAnalysisRequest, AudioFeaturesResponse, GenrePredictionResponse
+from models.schemas.analysis_schemas import AudioAnalysisRequest, AudioFeaturesResponse, BatchAnalysisRequest, BatchAnalysisResponse, GenrePredictionResponse
 from services.audio_analysis_service import AudioAnalyzer
 from services.ml_service import GenreClassifier
 
@@ -36,6 +36,16 @@ def predict_music_genre(request: AudioAnalysisRequest):
             status_code=500, 
             detail=f"Genre prediction failed: {str(e)}"
         )
+
+@router.post("/predict-genre/folder",  response_model=BatchAnalysisResponse)
+def analyze_music_folder(request:BatchAnalysisRequest):
+    """Analyze all audio files in a folder"""
+    try:
+        return genre_classifier.analyze_folder(request.folder_path, request.max_files)
+    except Exception as e:
+        raise HTTPException(
+                status_code=404, detail=e
+            )
 
 
 

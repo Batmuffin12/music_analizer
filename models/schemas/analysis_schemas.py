@@ -59,11 +59,26 @@ class AudioFeaturesResponse(BaseModel):
     file_path: str
 
 
-class GenrePredictionResponse(BaseModel):
-    """Response schema for genre prediction (we'll use this in Phase 3)"""
-
+class GenrePrediction(BaseModel):
+    """schema for genre prediction"""
     predicted_genre: str
     confidence: float
     all_probabilities: Dict[str, float]
+
+class GenrePredictionResponse(GenrePrediction) :
+    """Response schema for genre prediction"""
     file_path: str
     available_genres: List[str] = ["classical", "jazz", "metal", "rock", "blues"]
+
+
+class BatchAnalysisRequest(BaseModel):
+    folder_path : str
+    max_files: Optional[int] = 50
+
+class BatchAnalysisResponse(BaseModel):
+    total_files: int
+    successful_analyses: int
+    failed_analyses: Optional[int] = 0
+    folder_path: str
+    processing_time: float
+    results: list[GenrePrediction] 
